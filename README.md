@@ -85,13 +85,13 @@ vocaset/save_baseline_1stage_stage1/
 
 We freeze the general motion parameters and train the **Speaking Style Encoder** to stylize memory based on input audio.
 
-> Requires the best checkpoint from Stage 1 (e.g., `4_model.pth` or `best_model.pth`).
+> Requires the best checkpoint from Stage 1 (e.g., `?_model.pth`).
 
 ```bash
 python train_VOCA_2stage.py \
     --root_path ./ \
     --dataset vocaset \
-    --pretrained_model_path ./vocaset/save_baseline_1stage_stage1/4_model.pth \
+    --pretrained_model_path ./vocaset/save_baseline_1stage_stage1/?_model.pth \
     --exp_name baseline_2stage \
     --lr 0.00005 \
     --max_epoch 100 \
