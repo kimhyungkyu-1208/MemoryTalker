@@ -27,7 +27,6 @@ Tested with:
 - **PyTorch 1.12+**
 
 ```bash
-git clone https://github.com/cau-irislab/MemoryTalker.git
 cd MemoryTalker
 ```
 
