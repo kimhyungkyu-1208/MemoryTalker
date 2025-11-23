@@ -1,51 +1,67 @@
-MemoryTalker: Personalized Speech-Driven 3D Facial Animation via Audio-Guided Stylization (ICCV 2025)
+# MemoryTalker: Personalized Speech-Driven 3D Facial Animation via Audio-Guided Stylization (ICCV 2025)
 
-This repository contains the official PyTorch implementation of the paper:
-"MemoryTalker: Personalized Speech-Driven 3D Facial Animation via Audio-Guided Stylization", accepted at ICCV 2025.
+Official PyTorch implementation of **“MemoryTalker: Personalized Speech-Driven 3D Facial Animation via Audio-Guided Stylization”**, accepted at **ICCV 2025**.
 
-<b>Hyung Kyu Kim¹, Sangmin Lee², Hak Gu Kim¹</b>
-¹Chung-Ang University, ²Korea University
-</div>
+> **Hyung Kyu Kim¹, Sangmin Lee², Hak Gu Kim¹**  
+> ¹Chung-Ang University, ²Korea University
 
-📝 Abstract
+---
 
-Speech-driven 3D facial animation aims to synthesize realistic facial motion sequences from given audio, matching the speaker's speaking style. However, previous works often require priors such as class labels or additional 3D facial meshes at inference.
-To address these issues, we propose MemoryTalker, which enables realistic and accurate 3D facial motion synthesis by reflecting speaking style only with audio input. Our framework consists of two training stages:
+## 📝 Abstract
 
-Memorizing: Storing and retrieving general motion.
+Speech-driven 3D facial animation aims to synthesize realistic facial motion sequences from given audio, matching the speaker’s speaking style.  
+However, previous works often require priors such as class labels or additional 3D facial meshes at inference time.
 
-Animating: Performing personalized facial motion synthesis with motion memory stylized by audio-guided style features.
+To address these issues, we propose **MemoryTalker**, which enables realistic and accurate 3D facial motion synthesis **using only audio input**.  
+Our framework consists of two training stages:
 
-🛠️ Environment Setup
+1. **Memorizing**: Storing and retrieving general facial motion in a motion memory.  
+2. **Animating**: Synthesizing personalized facial motions by stylizing the retrieved memory with audio-guided style features.
 
-The code has been tested with Python 3.8+ and PyTorch 1.12+.
+---
 
-git clone [https://github.com/cau-irislab/MemoryTalker.git](https://github.com/cau-irislab/MemoryTalker.git)
+## 🛠️ Environment Setup
+
+Tested with:
+- **Python 3.8+**
+- **PyTorch 1.12+**
+
+```bash
+git clone https://github.com/cau-irislab/MemoryTalker.git
 cd MemoryTalker
-pip install -r requirements.txt
+```
 
+---
 
-📂 Data Preparation
+## 📂 Data Preparation
 
-We use VOCASET for training and evaluation. Please download the dataset and organize the directory as follows:
+We use **VOCASET** for training and evaluation.  
+Download the dataset and organize the directory as follows:
 
+```
 MemoryTalker/
 └── vocaset/
-    ├── wav/                # Audio files (.wav)
-    ├── vertices_npy/       # 3D facial motion files (.npy)
-    ├── templates.pkl       # Neutral face templates
+    ├── wav/                   # Audio files (.wav)
+    ├── vertices_npy/          # 3D facial motion files (.npy)
+    ├── templates.pkl          # Neutral face templates
     └── range/
         └── lips_coordinates.npy  # Lip indices for LVE metric
+```
 
+---
 
-🚀 Training Pipeline
+## 🚀 Training Pipeline
 
-Our training consists of two stages. You must train Stage 1 first, then use the pretrained model to train Stage 2.
+Training consists of **two stages**.  
+You must train **Stage 1 first**, then use the pretrained model to train **Stage 2**.
 
-1. Stage 1: Memorizing General Motion
+---
 
-In this stage, the model learns generic lip synchronizations and stores them in the Motion Memory.
+### 1) Stage 1: Memorizing General Motion
 
+The model learns generic lip synchronization and stores it in the motion memory.
+
+```bash
 python train_VOCA_1stage.py \
     --stage 1 \
     --root_path ./ \
@@ -56,16 +72,22 @@ python train_VOCA_1stage.py \
     --exp_name baseline_1stage \
     --max_epoch 100 \
     --device cuda
+```
 
+**Checkpoint path**
+```
+vocaset/save_baseline_1stage_stage1/
+```
 
-Note: The checkpoints will be saved in vocaset/save_baseline_1stage_stage1/.
+---
 
-2. Stage 2: Audio-Guided Stylization
+### 2) Stage 2: Audio-Guided Stylization
 
-In this stage, we freeze the general motion parameters and train the Speaking Style Encoder to stylize the memory based on the input audio.
+We freeze the general motion parameters and train the **Speaking Style Encoder** to stylize memory based on input audio.
 
-Requires: Path to the best checkpoint from Stage 1 (e.g., 4_model.pth or best_model.pth).
+> Requires the best checkpoint from Stage 1 (e.g., `4_model.pth` or `best_model.pth`).
 
+```bash
 python train_VOCA_2stage.py \
     --root_path ./ \
     --dataset vocaset \
@@ -74,20 +96,29 @@ python train_VOCA_2stage.py \
     --lr 0.00005 \
     --max_epoch 100 \
     --triplet_margin 5.0
+```
 
+---
 
-📊 Inference
+## 📊 Inference
 
-To generate 3D facial animations using the trained Stage 2 model:
+Generate personalized 3D facial animations using the trained Stage 2 model:
 
-# This is automatically run after training, or can be run manually via test script
-python train_VOCA_2stage.py --evaluate_only --pretrained_model_path ... 
+```bash
+# Automatically runs after Stage 2 training
+# or can be executed manually
+python train_VOCA_2stage.py \
+    --evaluate_only \
+    --pretrained_model_path <PATH_TO_STAGE2_CHECKPOINT>
+```
 
+---
 
-📜 Citation
+## 📜 Citation
 
-If you find this code or paper useful, please cite:
+If you find this work useful, please cite:
 
+```bibtex
 @InProceedings{Kim_2025_ICCV,
     author    = {Kim, Hyung Kyu and Lee, Sangmin and Kim, Hak Gu},
     title     = {MemoryTalker: Personalized Speech-Driven 3D Facial Animation via Audio-Guided Stylization},
@@ -95,3 +126,11 @@ If you find this code or paper useful, please cite:
     month     = {October},
     year      = {2025},
 }
+```
+
+---
+
+## ✅ Acknowledgements
+
+This project is based on VOCASET and built with PyTorch.  
+We thank the community for open-source tools and datasets that supported this research.
