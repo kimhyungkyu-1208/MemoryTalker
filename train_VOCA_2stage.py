@@ -132,13 +132,6 @@ def trainer(args, train_loader, dev_loader, model, optimizer, criterion, lip_ind
 
         current_lve = np.mean(valid_lve_log)
         print(f"Epoch {e} Validation LVE: {current_lve*1e5:.4f}")
-
-        # Save Best Model
-        if current_lve < total_lve_loss:
-            total_lve_loss = current_lve
-            best_epoch = e
-            torch.save(model.state_dict(), os.path.join(save_dir, f'{best_epoch}_model.pth'))
-            print(f"--> Best model saved (LVE: {total_lve_loss*1e5:.4f})")
         
         if e % 25 == 0:
              torch.save(model.state_dict(), os.path.join(save_dir, f'ckpt_{e}.pth'))
