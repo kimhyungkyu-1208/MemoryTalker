@@ -215,7 +215,7 @@ def trainer(args, train_loader, dev_loader, model, optimizer, criterion, lip_ind
         if e % 25 == 0:
             torch.save(model.state_dict(), os.path.join(save_dir, f'checkpoint_{e}.pth'))
     
-    return model, best_epoch
+    return model, e
 
 @torch.no_grad()
 def test(args, model, test_loader, best_epoch):
@@ -230,7 +230,7 @@ def test(args, model, test_loader, best_epoch):
 
     # Load Best Model
     save_dir = os.path.join(args.dataset, args.save_path)
-    model_path = os.path.join(save_dir, f'{best_epoch}_model.pth')
+    model_path = os.path.join(save_dir, f'checkpoint_{best_epoch}.pth')
     model.load_state_dict(torch.load(model_path))
     model = model.to(args.device)
     model.eval()

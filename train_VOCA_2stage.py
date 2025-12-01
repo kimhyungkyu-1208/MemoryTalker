@@ -136,7 +136,7 @@ def trainer(args, train_loader, dev_loader, model, optimizer, criterion, lip_ind
         if e % 25 == 0:
              torch.save(model.state_dict(), os.path.join(save_dir, f'ckpt_{e}.pth'))
 
-    return model, best_epoch
+    return model, e
 
 @torch.no_grad()
 def test(args, model, test_loader, best_epoch):
@@ -145,7 +145,7 @@ def test(args, model, test_loader, best_epoch):
     os.makedirs(result_dir)
 
     # Load Best Model
-    model_path = os.path.join(args.dataset, args.save_path, f'{best_epoch}_model.pth')
+    model_path = os.path.join(args.dataset, args.save_path, f'ckpt_{best_epoch}.pth')
     model.load_state_dict(torch.load(model_path))
     model = model.to(args.device)
     model.eval()
@@ -157,20 +157,12 @@ def test(args, model, test_loader, best_epoch):
     for audio, vertice, template, _, file_name in tqdm(test_loader, desc="Inference"):
         audio, template = audio.to(args.device), template.to(args.device)
         
-        start = time.time()
         # Inference mode: No triplet audio needed
         prediction, _, _, _, _, _, _ = model(audio, template, None, None, inference=True)
-        end = time.time()
 
         prediction = prediction.squeeze().cpu().numpy()
-        num_frames = prediction.shape[0] if len(prediction.shape) > 1 else 1
         
-        total_time += (end - start)
-        total_frames += num_frames
-
         np.save(os.path.join(result_dir, file_name[0].replace(".wav", ".npy")), prediction)
-
-    print(f"Inference Speed: {total_frames / total_time:.2f} FPS")
 
 def main():
     parser = argparse.ArgumentParser(description='MemoryTalker Stage 2 Training')
