@@ -233,7 +233,7 @@ def main():
     optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=args.lr)
     criterion = nn.MSELoss()
 
-    model, best_epoch = trainer(args, dataset["train"], dataset["test"], model, optimizer, criterion, lip_indices, start_epoch=args.start_epoch)
+    model, best_epoch = trainer(args, dataset["train"], dataset["valid"], model, optimizer, criterion, lip_indices, start_epoch=args.start_epoch)
     test(args, model, dataset["test"], best_epoch)
 
 if __name__=="__main__":

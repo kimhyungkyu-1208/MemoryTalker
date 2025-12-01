@@ -346,7 +346,7 @@ def main():
     memory_talker, best_epoch = trainer(
         args, 
         dataloaders["train"], 
-        dataloaders["test"], 
+        dataloaders["valid"], 
         memory_talker, 
         optimizer, 
         criterion, 
