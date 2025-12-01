@@ -192,7 +192,7 @@ def main():
 
     # Stage 2 Specifics
     parser.add_argument("--pretrained_model_path", type=str, required=True, help='Path to Stage 1 checkpoint')
-    parser.add_argument("--triplet_margin", type=float, default=5.0, help='Margin for Triplet Loss')
+    parser.add_argument("--triplet_margin", type=float, default=1.0, help='Margin for Triplet Loss')
     parser.add_argument("--softmax_scaling_term", type=float, default=16.0)
     
     # Model Params
